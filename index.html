@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Cuenta Regresiva</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --background-color: #e1d6ca;
+      --box-background: #ffffff;
+      --text-color: #333333;
+      --label-color: #888888;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --font-family: 'Poppins', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      font-family: var(--font-family);
+      background-color: var(--background-color);
+      color: var(--text-color);
+      width: 100%;
+      height: 100%;
+      overflow: hidden;  /* Evitar scroll */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #countdown-container {
+      padding: 20px;
+      max-width: 100%;
+      margin: auto;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;  /* Asegura que el contenedor ocupe toda la altura disponible */
+      box-sizing: border-box;
+    }
+
+    h1 {
+      font-weight: 300;
+      font-size: 2em;
+      margin-bottom: 30px;
+      color: var(--text-color);
+      text-align: center;
+      width: 100%;
+    }
+
+    #countdown {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      width: 100%;  /* Asegura que el countdown use todo el ancho disponible */
+      box-sizing: border-box;
+    }
+
+    .time-unit {
+      background-color: var(--box-background);
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px var(--shadow-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 70px;
+      flex: 1 0 22%;
+      max-width: 100px;
+      box-sizing: border-box;
+      margin: 5px;  /* Espacio para evitar que se peguen los elementos */
+    }
+
+    .number {
+      font-size: 2.5em;
+      font-weight: 600;
+    }
+
+    .label {
+      font-size: 0.8em;
+      font-weight: 300;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--label-color);
+      margin-top: 5px;
+    }
+
+    #end-message {
+      font-size: 1.3em;
+      font-weight: 600;
+      margin-top: 30px;
+    }
+
+    /* Media Queries */
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5em;
+      }
+
+      .time-unit {
+        width: 60px;
+        flex: 1 0 40%;
+        padding: 10px;
+      }
+
+      .number {
+        font-size: 2em;
+      }
+
+      .label {
+        font-size: 0.7em;
+      }
+    }
+
+    /* Ajustes adicionales para pantallas muy pequeñas */
+    @media (max-width: 320px) {
+      .time-unit {
+        width: 50px;
+        padding: 8px;
+      }
+
+      .number {
+        font-size: 1.8em;
+      }
+
+      .label {
+        font-size: 0.6em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="countdown-container">
+    <h1>Cuenta Regresiva</h1>
+    <div id="countdown">
+      <div class="time-unit">
+        <span id="days" class="number">00</span>
+        <span class="label">Días</span>
+      </div>
+      <div class="time-unit">
+        <span id="hours" class="number">00</span>
+        <span class="label">Horas</span>
+      </div>
+      <div class="time-unit">
+        <span id="minutes" class="number">00</span>
+        <span class="label">Minutos</span>
+      </div>
+      <div class="time-unit">
+        <span id="seconds" class="number">00</span>
+        <span class="label">Segundos</span>
+      </div>
+    </div>
+    <div id="end-message" style="display: none;">¡El momento ha llegado!</div>
+  </div>
+
+  <script>
+    const targetDate = new Date(2025, 6, 12, 15, 15, 0).getTime();
+    const daysEl = document.getElementById('days');
+    const hoursEl = document.getElementById('hours');
+    const minutesEl = document.getElementById('minutes');
+    const secondsEl = document.getElementById('seconds');
+    const countdownEl = document.getElementById('countdown');
+    const endMessageEl = document.getElementById('end-message');
+
+    function formatTime(time) {
+      return time < 10 ? `0${time}` : time;
+    }
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+
+      if (distance < 0) {
+        clearInterval(interval);
+        countdownEl.style.display = 'none';
+        endMessageEl.style.display = 'block';
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      daysEl.innerText = formatTime(days);
+      hoursEl.innerText = formatTime(hours);
+      minutesEl.innerText = formatTime(minutes);
+      secondsEl.innerText = formatTime(seconds);
+    }
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+  </script>
+</body>
+</html>
